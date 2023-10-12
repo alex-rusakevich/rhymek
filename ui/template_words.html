@@ -1,42 +1,9 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta charset="utf-8" />
+{% extends "./base_layout.html" %}
 
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        <style>
-            * {
-                font-family: system-ui, -apple-system, 
-                    BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 
-                    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-
-                color: {{system_font_color}};
-                font-size: {{font_size}}pt;
-            }
-
-            body {
-                background-color: {{system_bg_color}};
-            }
-
-            span.found-word {
-                min-width: 100px;
-                max-width: 100px;
-                display: inline-block;
-            }
-
-            span.found-word.ending {
-                color: {{ending_color}};
-            }
-        </style>
-    </head>
-
-    <body>
-        <div id="word-grid">
-            {% for word in words %}
+{% block body %}
+    <div id="word-grid">
+        {% for word in words %}
             <span class="found-word">{{word}}</span>
-            {% endfor %}
-        </div>
-    </body>
-</html>
+        {% endfor %}
+    </div>
+{% endblock %}
