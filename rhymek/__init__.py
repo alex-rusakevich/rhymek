@@ -9,6 +9,37 @@ from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QApplication
 
+from rhymek.processors import LANG_PROCESSORS
+
+
+def render_and_set_words_html(window, jinja2_global_vars, words=()):
+    processors = LANG_PROCESSORS[window.languageComboBox.currentText()]
+    word_to_search = window.searchEdit.text().strip()
+
+    results = []
+    for proc in processors:
+        results += proc(word_to_search)
+
+    results = list(set(results))
+
+    jinja2_template_string = open(os.path.join("ui", "template_words.html"), "r").read()
+    template = Template(jinja2_template_string)
+    html_template_string = template.render(words=results, **jinja2_global_vars)
+
+    window.webEngineView.page().setHtml(html_template_string)
+
+
+def render_and_set_hello_html(window, jinja2_global_vars):
+    jinja2_template_string = open(os.path.join("ui", "template_hello.html"), "r").read()
+    template = Template(jinja2_template_string)
+    html_template_string = template.render(**jinja2_global_vars)
+
+    window.webEngineView.page().setHtml(html_template_string)
+
+
+def search_button_clicked(window, jinja2_global_vars):
+    render_and_set_words_html(window, jinja2_global_vars, [])
+
 
 def run_app():
     app = QApplication(sys.argv)
@@ -25,7 +56,13 @@ def run_app():
     palette = window.style().standardPalette()
     ui_file.close()
 
-    jinja2_vars = {
+    window.browser = QWebEngineView()
+    window.setWindowIcon(QtGui.QIcon(os.path.join("ui", "favicon.svg")))
+
+    for k, _ in LANG_PROCESSORS.items():
+        window.languageComboBox.addItem(k)
+
+    jinja2_global_vars = {
         "system_bg_color": palette.color(QPalette.Base).name(),
         "system_font_color": palette.color(QPalette.Text).name(),
         "font_size": (
@@ -36,20 +73,16 @@ def run_app():
         "ending_color": palette.color(QPalette.Highlight).name(),
     }
 
-    words = ("Hello",) * 128
+    render_and_set_hello_html(window, jinja2_global_vars)
 
-    jinja2_template_string = open(os.path.join("ui", "template.html"), "r").read()
-    template = Template(jinja2_template_string)
-    html_template_string = template.render(words=words, **jinja2_vars)
-
-    window.browser = QWebEngineView()
-    window.setWindowIcon(QtGui.QIcon(os.path.join("ui", "favicon.svg")))
+    window.searchButton.clicked.connect(
+        lambda: search_button_clicked(window, jinja2_global_vars)
+    )
 
     if not window:
         print(loader.errorString())
         sys.exit(-1)
 
-    window.webEngineView.page().setHtml(html_template_string)
     window.show()
 
     sys.exit(app.exec())

@@ -18,12 +18,19 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QComboBox" name="languageComboBox"/>
-      </item>
-      <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLineEdit" name="searchEdit"/>
+        </item>
+        <item>
+         <widget class="QComboBox" name="languageComboBox">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="searchButton">
@@ -31,7 +38,8 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset theme="edit-find"/>
+           <iconset theme="edit-find">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -66,8 +74,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>searchEdit</tabstop>
-  <tabstop>searchButton</tabstop>
-  <tabstop>languageComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

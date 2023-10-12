@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 pyside6 = "*"
 jinja2 = "*"
+requests = "*"
+bs4 = "*"
 
 [dev-packages]
 black = "*"
