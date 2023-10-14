@@ -77,6 +77,7 @@ def run_app():
     render_to_webview(window, jinja2_global_vars, "template_hello.html")
 
     window.searchButton.clicked.connect(lambda: search_button_clicked(window))
+    window.searchEdit.returnPressed.connect(lambda: search_button_clicked(window))
 
     if not window:
         print(loader.errorString())
