@@ -1,9 +1,13 @@
 {% extends "./base_layout.html" %}
 
 {% block body %}
-    <div id="word-grid">
-        {% for word in words %}
-            <span class="found-word">{{word}}</span>
-        {% endfor %}
-    </div>
+    {% if words %}
+        <div id="word-grid">
+            {% for word in words %}
+                <span class="found-word">{{word}}</span>
+            {% endfor %}
+        </div>
+    {% else %}
+        <span>Sorry, but no rhyme was found. Please, check the spelling of your word and try again</span>
+    {% endif %}
 {% endblock %}

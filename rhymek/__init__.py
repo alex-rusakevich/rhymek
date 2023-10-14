@@ -4,7 +4,7 @@ import sys
 from jinja2 import Environment, FileSystemLoader, Template
 from PySide6 import QtGui
 from PySide6.QtCore import QFile, QIODevice
-from PySide6.QtGui import QFont, QPalette
+from PySide6.QtGui import QPalette
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QApplication
@@ -12,20 +12,6 @@ from PySide6.QtWidgets import QApplication
 from rhymek.processors import LANG_PROCESSORS
 
 jinja2_global_vars = {}
-
-
-def get_common_end(str1: str, str2: str) -> str:
-    found_str = ""
-    i = -1
-
-    while (i * -1) <= len(str1) and (i * -1) <= len(str2):
-        if str1[i] == str2[i]:
-            found_str += str1[i]
-        else:
-            return found_str[::-1]
-        i -= 1
-
-    return found_str[::-1]
 
 
 def render_to_webview(window, jinja2_vars, template_name):
@@ -40,21 +26,10 @@ def render_to_webview(window, jinja2_vars, template_name):
 
 
 def render_and_set_words_html(window):
-    processors = LANG_PROCESSORS[window.languageComboBox.currentText()]
+    processor = LANG_PROCESSORS[window.languageComboBox.currentText()]
     word_to_search = window.searchEdit.text().strip()
 
-    results = []
-    for proc in processors:
-        results += proc(word_to_search)
-
-    results = list(set(results))
-
-    for i, v in enumerate(results):
-        common_end = get_common_end(word_to_search, v)
-        if common_end != "":
-            results[i] = results[i].replace(
-                common_end, f'<span class="ending">{common_end}</span>'
-            )
+    results = processor.process(word_to_search)
 
     render_to_webview(
         window, {**jinja2_global_vars, "words": results}, "template_words.html"
