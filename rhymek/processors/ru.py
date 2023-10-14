@@ -15,9 +15,9 @@ class RhymeProcessor(BaseRhymeProcessor):
 
         found_str = ""
 
-        if (
-            ref_word[-1] == word_from[-1]
-            or ref_word[-1] == VOICELESS_VOICED[word_from[-1]]
+        if ref_word[-1] == word_from[-1] or (
+            word_from[-1] in VOICELESS_VOICED
+            and ref_word[-1] == VOICELESS_VOICED[word_from[-1]]
         ):
             found_str += word_from[-1]
 
@@ -46,4 +46,18 @@ class RhymeProcessor(BaseRhymeProcessor):
 
         return words
 
-    WORKERS = (rifme_net_worker,)
+    def rifmovka_ru(word: str) -> list:
+        resp = requests.get(f"https://rifmovka.ru/rifma/{word}", headers=BASIC_HEADERS)
+        soup = BeautifulSoup(resp.text, "html.parser")
+
+        words = []
+
+        uls = soup.find_all("ul", {"class": "vowelBlock"})
+        for ul in uls:
+            lis = ul.find_all("li")
+            for li in lis:
+                words.append(li.text.strip())
+
+        return words
+
+    WORKERS = (rifme_net_worker, rifmovka_ru)

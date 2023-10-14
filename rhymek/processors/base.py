@@ -12,7 +12,7 @@ class BaseRhymeProcessor:
         for proc in self.WORKERS:
             results += proc(word)
 
-        results = list(set(results))
+        results = [i for i in set(results) if i.strip() != ""]
 
         for i, v in enumerate(results):
             common_end = self.__class__.get_common_end(word, v)

@@ -20,17 +20,9 @@
             body {
                 background-color: {{system_bg_color}};
             }
-
-            span.found-word {
-                min-width: 100px;
-                max-width: 100px;
-                display: inline-block;
-            }
-
-            span.found-word > span.ending {
-                color: {{ending_color}};
-            }
         </style>
+
+        {% block style %}{% endblock %}
     </head>
 
     <body>
