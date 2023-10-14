@@ -1,9 +1,10 @@
 import os
+import signal
 import sys
 
-from jinja2 import Environment, FileSystemLoader, Template
+from jinja2 import Environment, FileSystemLoader
 from PySide6 import QtGui
-from PySide6.QtCore import QFile, QIODevice
+from PySide6.QtCore import QFile, QIODevice, QTimer
 from PySide6.QtGui import QPalette
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtWebEngineWidgets import QWebEngineView
@@ -38,6 +39,14 @@ def render_and_set_words_html(window):
 
 def search_button_clicked(window):
     render_and_set_words_html(window)
+
+
+def keyboardInterruptHandler(signal, frame):
+    print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
 
 def run_app():
@@ -84,5 +93,9 @@ def run_app():
         sys.exit(-1)
 
     window.show()
+
+    timer = QTimer()
+    timer.timeout.connect(lambda: None)
+    timer.start(512)
 
     sys.exit(app.exec())

@@ -3,9 +3,14 @@
 {% block style %}
 <style>
     span.found-word {
-        min-width: 100px;
-        max-width: 100px;
-        display: inline-block;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
     }
 
     span.found-word > span.ending {
@@ -14,6 +19,17 @@
 
     div#words-found {
         margin-bottom: 1em;
+    }
+
+    div#word-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, max-content));
+        gap: 2px;
+        margin-bottom: 1em;
+    }
+
+    br.words-new-line {
+        grid-column-start: 1;
     }
 </style>
 {% endblock %}
@@ -27,7 +43,7 @@
                 <span class="found-word">{{word}}</span>
 
                 {% if loop.index % 20 == 0 %}
-                    <br><br>
+                    </div><div id="word-grid">
                 {% endif %}
             {% endfor %}
         </div>
