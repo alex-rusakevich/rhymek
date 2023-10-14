@@ -1,3 +1,6 @@
+import re
+
+
 class BaseRhymeProcessor:
     WORKERS = ()
 
@@ -12,10 +15,12 @@ class BaseRhymeProcessor:
         results = list(set(results))
 
         for i, v in enumerate(results):
-            common_end = BaseRhymeProcessor.get_common_end(word, v)
+            common_end = self.__class__.get_common_end(word, v)
             if common_end != "":
-                results[i] = results[i].replace(
-                    common_end, f'<span class="ending">{common_end}</span>'
+                results[i] = re.sub(
+                    common_end + "$",
+                    f'<span class="ending">{common_end}</span>',
+                    results[i],
                 )
 
         return results
