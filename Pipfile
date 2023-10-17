@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyside6 = "*"
-jinja2 = "*"
 requests = "*"
 bs4 = "*"
+platformdirs = "*"
+colorama = "*"
 
 [dev-packages]
 black = "*"

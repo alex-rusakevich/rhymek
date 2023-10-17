@@ -10,3 +10,7 @@ LANG_PROCESSORS = {
 
 def get_lang_processor(langcode: str) -> Union[BaseRhymeProcessor, None]:
     return LANG_PROCESSORS.get(langcode)
+
+
+def get_available_langcodes():
+    return LANG_PROCESSORS.keys()
