@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 import argparse
-from argparse import Namespace
+from argparse import Namespace, RawDescriptionHelpFormatter
 
 import colorama
 
 from rhymek.cache import clear_cache, get_cache, set_cache
-from rhymek.processors import get_available_langcodes, get_lang_processor
+from rhymek.processors import (
+    get_available_langcodes,
+    get_lang_processor,
+    get_services_names_addresses,
+)
 
 
 def main(args: Namespace):
@@ -48,10 +52,26 @@ def main(args: Namespace):
 if __name__ == "__main__":
     colorama.init()
 
+    web_services_dict = get_services_names_addresses()
+    web_services_str = ""
+
+    for locale, web_services in web_services_dict.items():
+        web_services_str += f"{locale.upper()} locale:\n"
+
+        for i, (name, address) in enumerate(web_services):
+            web_services_str += f"{i+1}. {name} ({address})\n"
+
+        web_services_str += "\n"
+
     parser = argparse.ArgumentParser(
-        description="""
-A program for finding rhymes to various words
-""".strip()
+        prog="rhymek",
+        description="A program for finding rhymes to various words",
+        formatter_class=RawDescriptionHelpFormatter,
+        epilog=f"""
+The project would not be possible without these web services:
+
+{web_services_str}
+""",
     )
     parser.add_argument("word_in", type=str)
     parser.add_argument(
@@ -59,7 +79,7 @@ A program for finding rhymes to various words
         "--langcode",
         type=str,
         help=f"The language code of the searched word ({', '.join(get_available_langcodes())})",
-        default=get_available_langcodes()[0],
+        default=tuple(get_available_langcodes())[0],
     )
     parser.add_argument(
         "-c",

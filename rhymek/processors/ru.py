@@ -1,12 +1,52 @@
 import requests
 from bs4 import BeautifulSoup
 
-from rhymek.processors.base import BaseRhymeProcessor
+from rhymek.processors.base import BaseRhymeProcessor, BaseWorker
 from rhymek.utils import BASIC_HEADERS
+
+
+class RifmeNetWorker(BaseWorker):
+    name = "rifme.net"
+    web_address = "https://rifme.net"
+
+    def get_rhymes(self, word: str) -> list:
+        resp = requests.get(f"https://rifme.net/r/{word}/0", headers=BASIC_HEADERS)
+        soup = BeautifulSoup(resp.text, "html.parser")
+
+        words = []
+
+        soup.find("ul#tochnye")
+        if tochnye := soup.select_one("ul#tochnye"):
+            for li in tochnye.findAll("li"):
+                if not li.text.startswith("http"):
+                    words.append(li.text.strip())
+
+        return words
+
+
+class RifmovkaRuWorker(BaseWorker):
+    name = "rifmovka.ru"
+    web_address = "https://rifmovka.ru"
+
+    def get_rhymes(self, word: str) -> list:
+        resp = requests.get(f"https://rifmovka.ru/rifma/{word}", headers=BASIC_HEADERS)
+        soup = BeautifulSoup(resp.text, "html.parser")
+
+        words = []
+
+        uls = soup.find_all("ul", {"class": "vowelBlock"})
+        for ul in uls:
+            lis = ul.find_all("li")
+            for li in lis:
+                words.append(li.text.strip())
+
+        return words
 
 
 class RhymeProcessor(BaseRhymeProcessor):
     LANG_NAME = "Русский"
+
+    WORKERS = (RifmeNetWorker(), RifmovkaRuWorker())
 
     @staticmethod
     def get_common_end(ref_word: str, word_from: str) -> str:
@@ -47,33 +87,3 @@ class RhymeProcessor(BaseRhymeProcessor):
             i -= 1
 
         return found_str[::-1]
-
-    def rifme_net_worker(word: str) -> list:
-        resp = requests.get(f"https://rifme.net/r/{word}/0", headers=BASIC_HEADERS)
-        soup = BeautifulSoup(resp.text, "html.parser")
-
-        words = []
-
-        soup.find("ul#tochnye")
-        if tochnye := soup.select_one("ul#tochnye"):
-            for li in tochnye.findAll("li"):
-                if not li.text.startswith("http"):
-                    words.append(li.text.strip())
-
-        return words
-
-    def rifmovka_ru(word: str) -> list:
-        resp = requests.get(f"https://rifmovka.ru/rifma/{word}", headers=BASIC_HEADERS)
-        soup = BeautifulSoup(resp.text, "html.parser")
-
-        words = []
-
-        uls = soup.find_all("ul", {"class": "vowelBlock"})
-        for ul in uls:
-            lis = ul.find_all("li")
-            for li in lis:
-                words.append(li.text.strip())
-
-        return words
-
-    WORKERS = (rifme_net_worker, rifmovka_ru)

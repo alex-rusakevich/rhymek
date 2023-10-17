@@ -1,6 +1,14 @@
 import re
 
 
+class BaseWorker:
+    name = ""
+    web_address = ""
+
+    def get_rhymes(self, word: str) -> list:
+        pass
+
+
 class BaseRhymeProcessor:
     WORKERS = ()
     HIGHLIGHT_START = "["
@@ -11,8 +19,8 @@ class BaseRhymeProcessor:
 
     def process(self, word: str):
         results = []
-        for proc in self.WORKERS:
-            results += proc(word)
+        for worker in self.WORKERS:
+            results += worker.get_rhymes(word)
 
         results = [i for i in set(results) if i.strip() != ""]
 
