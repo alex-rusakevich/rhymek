@@ -6,6 +6,8 @@ from rhymek.utils import BASIC_HEADERS
 
 
 class RhymeProcessor(BaseRhymeProcessor):
+    LANG_NAME = "Русский"
+
     @staticmethod
     def get_common_end(ref_word: str, word_from: str) -> str:
         ref_word = ref_word.lower().strip()

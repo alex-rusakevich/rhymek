@@ -3,6 +3,8 @@ import re
 
 class BaseRhymeProcessor:
     WORKERS = ()
+    HIGHLIGHT_START = "["
+    HIGHLIGHT_END = "]"
 
     def __init__(self):
         pass
@@ -19,7 +21,7 @@ class BaseRhymeProcessor:
             if common_end != "":
                 results[i] = re.sub(
                     common_end + "$",
-                    f'<span class="ending">{common_end}</span>',
+                    f"{self.HIGHLIGHT_START}{common_end}{self.HIGHLIGHT_END}",
                     results[i],
                 )
 

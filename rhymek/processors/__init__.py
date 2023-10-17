@@ -1,5 +1,12 @@
+from typing import Union
+
 from rhymek.processors import ru
+from rhymek.processors.base import BaseRhymeProcessor
 
 LANG_PROCESSORS = {
-    "Русский": ru.RhymeProcessor(),
+    "ru": ru.RhymeProcessor(),
 }
+
+
+def get_lang_processor(langcode: str) -> Union[BaseRhymeProcessor, None]:
+    return LANG_PROCESSORS.get(langcode)
