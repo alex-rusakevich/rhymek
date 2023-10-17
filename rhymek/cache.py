@@ -50,4 +50,15 @@ def set_cache(word_in: str, langcode: str, results: list[str]):
         return f.name
 
 
+def clear_cache():
+    for filepath in glob.glob(os.path.join(CACHE_DIR, "*.cache")):
+        try:
+            os.remove(filepath)
+        except:
+            print(f"Cannot remove '{filepath}', skipping...")
+
+    global CACHED_HASHES
+    CACHED_HASHES = {}
+
+
 populate_cached_hashes()

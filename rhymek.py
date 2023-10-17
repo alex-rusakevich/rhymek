@@ -4,11 +4,14 @@ from argparse import Namespace
 
 import colorama
 
-from rhymek.cache import get_cache, set_cache
+from rhymek.cache import clear_cache, get_cache, set_cache
 from rhymek.processors import get_available_langcodes, get_lang_processor
 
 
 def main(args: Namespace):
+    if args.clear_cache:
+        clear_cache()
+
     processor = get_lang_processor(args.langcode)
     if not processor:
         raise Exception(f"Processor for language code '{args.langcode}' does not exist")
@@ -24,6 +27,8 @@ def main(args: Namespace):
         has_cache = True
     else:
         results = processor.process(word_to_search)
+
+    print("Rhymes found:", len(results), "\n")
 
     for i, r in enumerate(results):
         # r = r.replace("[", colorama.Fore.GREEN).replace("]", colorama.Fore.RESET)
@@ -52,10 +57,16 @@ if __name__ == "__main__":
         default="ru",
     )
     parser.add_argument(
-        "-C",
+        "-c",
         "--no-cache",
         action="store_true",
         help=f"Don't load and save cache for searched word and language",
+    )
+    parser.add_argument(
+        "-C",
+        "--clear-cache",
+        action="store_true",
+        help=f"Clear cache before start",
     )
 
     args = parser.parse_args()

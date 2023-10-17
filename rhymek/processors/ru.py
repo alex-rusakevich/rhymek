@@ -10,18 +10,32 @@ class RhymeProcessor(BaseRhymeProcessor):
 
     @staticmethod
     def get_common_end(ref_word: str, word_from: str) -> str:
+        def devoice_char(char_in: str):
+            VOICELESS_VOICED = {
+                "б": "п",
+                "в": "ф",
+                "г": "к",
+                "д": "т",
+                "ж": "ш",
+                "з": "с",
+            }
+
+            if char_in in VOICELESS_VOICED:
+                return VOICELESS_VOICED[char_in]
+            else:
+                return char_in
+
         ref_word = ref_word.lower().strip()
         word_from = word_from.lower().strip()
-
-        VOICELESS_VOICED = {"б": "п", "в": "ф", "г": "к", "д": "т", "ж": "ш", "з": "с"}
 
         found_str = ""
 
         if ref_word[-1] == word_from[-1] or (
-            word_from[-1] in VOICELESS_VOICED
-            and ref_word[-1] == VOICELESS_VOICED[word_from[-1]]
+            devoice_char(word_from[-1]) == devoice_char(ref_word[-1])
         ):
             found_str += word_from[-1]
+        else:
+            return found_str
 
         i = -2
 
